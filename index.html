@@ -27,124 +27,104 @@
             color: #333;
         }
 
-        /* Kontejner přizpůsobený mobilu */
-        .container { 
-            max-width: 100%; 
-            margin: auto; 
-            background: white; 
-            padding: 15px; 
-            border-radius: 15px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        /* OPRAVA PŘIHLAŠOVACÍ OBRAZOVKY */
+        #loginOverlay {
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background:white; z-index:1000; display:flex; flex-direction:column;
+            align-items:center; justify-content:center; padding: 30px; 
+            text-align:center; box-sizing: border-box;
         }
 
-        h2 { 
-            font-size: 1.4rem; 
-            text-transform: uppercase; 
-            border-bottom: 3px solid var(--primary-orange);
-            padding-bottom: 8px;
-            margin-top: 0;
-        }
-
-        /* Status bar nahoře */
-        .top-status { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            font-size: 0.8rem; 
-            margin-bottom: 15px;
-            background: #eee;
-            padding: 5px 10px;
-            border-radius: 20px;
-        }
-
-        /* Formulář pod sebou pro mobil */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        #loginOverlay h2 { margin-bottom: 10px; border: none; text-align: center; width: 100%; }
         
-        input { 
-            padding: 12px; 
-            border: 1px solid #ccc; 
-            border-radius: 8px; 
-            font-size: 16px; /* Prevence zoomu na iPhone */
-            width: 100%; 
-            box-sizing: border-box; 
+        #loginOverlay input {
+            max-width: 200px;
+            padding: 12px;
+            border: 2px solid var(--primary-orange);
+            border-radius: 8px;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: block;
         }
 
-        .date-input-group { display: flex; gap: 8px; }
-        .date-input-group input { flex: 1; }
-        .date-input-group button { width: auto; padding: 0 15px; }
+        .container { max-width: 100%; margin: auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 
-        button { 
-            background-color: var(--primary-orange); 
-            color: white; 
-            border: none; 
-            padding: 12px; 
-            cursor: pointer; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 1rem;
-        }
+        h2 { font-size: 1.2rem; text-transform: uppercase; border-bottom: 3px solid var(--primary-orange); padding-bottom: 8px; margin-top: 0; }
 
-        .btn-add { width: 100%; margin-top: 10px; background: #333; }
+        .top-status { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; margin-bottom: 15px; background: #f0f0f0; padding: 8px 12px; border-radius: 20px; }
+
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85rem; color: #555; }
         
-        /* Vyhledávání */
-        .search-row { margin: 20px 0; }
-        .search-input { border: 2px solid var(--primary-orange); }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box; }
 
-        /* Tabulka transformovaná na karty pro mobil */
-        table, thead, tbody, th, td, tr { display: block; }
-        thead tr { position: absolute; top: -9999px; left: -9999px; }
+        .date-input-group { display: flex; gap: 5px; }
+        .date-input-group button { background: #666; font-size: 0.8rem; padding: 0 10px; }
+
+        button { background-color: var(--primary-orange); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        .btn-add { width: 100%; margin-top: 5px; background: #222; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .search-input { border: 2px solid var(--primary-orange); margin: 15px 0; }
+
+        /* OPRAVA KARET A TLAČÍTEK */
+        table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box; }
+        thead { display: none; }
         
         tr { 
             border: 1px solid #eee; 
             margin-bottom: 15px; 
-            border-radius: 10px; 
-            padding: 10px; 
+            border-radius: 12px; 
+            padding: 12px; 
             background: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            position: relative;
         }
 
-        tr.not-sent { border-left: 5px solid var(--danger-red); background: #fff8f8; }
+        tr.not-sent { border-left: 6px solid var(--danger-red); }
 
-        td { border: none; padding: 5px 0; position: relative; padding-left: 40%; font-size: 0.95rem; }
+        td { border: none; padding: 4px 0; padding-left: 30%; font-size: 0.9rem; min-height: 1.2rem; }
         td:before { 
-            position: absolute; left: 0; width: 35%; padding-right: 10px; 
-            white-space: nowrap; font-weight: bold; color: #888; font-size: 0.8rem;
+            position: absolute; left: 12px; width: 25%; font-weight: bold; color: #999; font-size: 0.75rem; text-transform: uppercase;
         }
 
-        /* Názvy polí v kartě */
-        td:nth-of-type(1):before { content: "Datum:"; }
-        td:nth-of-type(2):before { content: "Firma:"; }
-        td:nth-of-type(3):before { content: "Osoba:"; }
-        td:nth-of-type(4):before { content: "Odesláno:"; }
-        td:nth-of-type(5):before { content: "Poznámka:"; }
-        td:nth-of-type(6) { padding-left: 0; text-align: center; border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px; }
-
-        .btn-process { width: 100%; margin-bottom: 10px; }
-        .col-actions { display: flex; justify-content: space-around; width: 100% !important; }
-
-        /* Zámek obrazovky */
-        #loginOverlay {
-            position: fixed; top:0; left:0; width:100%; height:100%; 
-            background:white; z-index:1000; display:flex; flex-direction:column;
-            align-items:center; justify-content:center; padding: 20px; text-align:center;
+        td:nth-of-type(1):before { content: "Datum"; }
+        td:nth-of-type(2):before { content: "Firma"; }
+        td:nth-of-type(3):before { content: "Osoba"; }
+        td:nth-of-type(4):before { content: "Odesláno"; }
+        td:nth-of-type(5):before { content: "Poznámka"; }
+        
+        /* Tlačítka v kartě vedle sebe */
+        td:last-child { 
+            padding-left: 0; 
+            display: flex; 
+            gap: 6px; 
+            margin-top: 10px; 
+            border-top: 1px solid #f0f0f0; 
+            padding-top: 12px; 
         }
+
+        .btn-card { flex: 1; font-size: 0.75rem; padding: 10px 4px; text-align: center; text-transform: uppercase; }
+        .btn-process { flex: 1.4; background: var(--primary-orange); }
+        .btn-edit { background: #ffc107; color: #000; }
+        .btn-delete { background: var(--danger-red); }
+
     </style>
 </head>
 <body>
 
 <div id="loginOverlay">
-    <h2>Vstup do evidence</h2>
-    <p>Zadejte přístupový kód:</p>
-    <input type="password" id="passCode" style="text-align:center; margin-bottom:20px;">
+    <h2>VSTUP DO EVIDENCE</h2>
+    <hr style="width:50px; border:2px solid var(--primary-orange); margin-bottom:20px;">
+    <p style="font-size:0.9rem; color: #666;">Zadejte přístupový kód:</p>
+    <input type="password" id="passCode" inputmode="numeric">
     <button onclick="checkPass()" style="width:200px">ODEMKNOUT</button>
 </div>
 
 <div class="container" id="mainContent" style="display:none;">
     <div class="top-status">
         <span id="counter">Záznamů: 0</span>
-        <span id="offlineStatus" style="color:var(--dark-orange)"></span>
-        <div id="dbStatus" style="width:10px; height:10px; border-radius:50%; background:#ccc;"></div>
+        <div id="dbStatus" style="width:12px; height:12px; border-radius:50%; background:#ccc;"></div>
     </div>
 
     <h2 id="formTitle">Nový vzorek</h2>
@@ -153,7 +133,7 @@
         
         <div class="form-group">
             <label>Název firmy:</label>
-            <input type="text" id="firma" required placeholder="Jméno firmy">
+            <input type="text" id="firma" required placeholder="Např. Aco Ind">
         </div>
 
         <div class="form-group">
@@ -166,11 +146,11 @@
 
         <div class="form-group">
             <label>Kontaktní osoba:</label>
-            <input type="text" id="osoba" placeholder="Jméno">
+            <input type="text" id="osoba" placeholder="Jméno (nepovinné)">
         </div>
 
         <div class="form-group">
-            <label>Odesláno (vyplňte při expedici):</label>
+            <label>Odesláno:</label>
             <div class="date-input-group">
                 <input type="text" id="odeslano">
                 <button type="button" onclick="setToday('odeslano')">Dnes</button>
@@ -179,16 +159,14 @@
 
         <div class="form-group">
             <label>Poznámka:</label>
-            <input type="text" id="poznamka">
+            <input type="text" id="poznamka" placeholder="...">
         </div>
 
-        <button type="submit" id="submitBtn" class="btn-add">ULOŽIT ZÁZNAM</button>
-        <button type="button" id="cancelEdit" style="display:none; background:#666; width:100%; margin-top:10px;" onclick="resetForm()">ZRUŠIT</button>
+        <button type="submit" id="submitBtn" class="btn-add">ULOŽIT DO SEZNAMU</button>
+        <button type="button" id="cancelEdit" style="display:none; background:#666; width:100%; margin-top:10px;" onclick="resetForm()">ZRUŠIT ÚPRAVY</button>
     </form>
 
-    <div class="search-row">
-        <input type="text" id="search" class="search-input" placeholder="Hledat firmu..." onkeyup="handleSearch()">
-    </div>
+    <input type="text" id="search" class="search-input" placeholder="Hledat firmu..." onkeyup="handleSearch()">
 
     <table id="recordTable">
         <tbody id="tableBody"></tbody>
@@ -196,46 +174,38 @@
 </div>
 
 <script>
-    // --- VAŠE KONFIGURACE ---
     const DB_URL = "https://vzorky-seznam-default-rtdb.europe-west1.firebasedatabase.app/vzorky.json";
-    const SECRET_CODE = "1234"; // TADY SI NASTAVTE SVÉ HESLO
+    const SECRET_CODE = "1234"; // VAŠE HESLO
 
-    function checkPass() {
-        const val = document.getElementById('passCode').value;
-        if(val === SECRET_CODE) {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            loadData();
-        } else {
-            alert("Špatný kód!");
-        }
-    }
-
-    // --- ZBYTEK LOGIKY (PŮVODNÍ + ÚPRAVY) ---
     let allRecords = [];
     const fp_obj = flatpickr("#datum_obj", { locale: "cs", dateFormat: "j.n.Y", defaultDate: "today" });
     const fp_sent = flatpickr("#odeslano", { locale: "cs", dateFormat: "j.n.Y" });
+
+    function checkPass() {
+        if(document.getElementById('passCode').value === SECRET_CODE) {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            loadData();
+        } else { alert("Chybný kód!"); }
+    }
 
     function setToday(id) { (id === 'datum_obj' ? fp_obj : fp_sent).setDate(new Date()); }
 
     async function loadData() {
         try {
-            const response = await fetch(DB_URL);
-            const data = await response.json();
-
-            allRecords = data ? Object.keys(data).map(key => ({ ...data[key], fbKey: key })) : [];
+            const res = await fetch(DB_URL);
+            const data = await res.json();
+            allRecords = data ? Object.keys(data).map(k => ({ ...data[k], fbKey: k })) : [];
             displayRecords();
             document.getElementById('dbStatus').style.background = "var(--success-green)";
-        } catch (e) {
-            document.getElementById('dbStatus').style.background = "var(--danger-red)";
-        }
+        } catch (e) { document.getElementById('dbStatus').style.background = "var(--danger-red)"; }
     }
 
     function displayRecords() {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
         
-        // Seřazení: Neodeslané nahoře, pak podle data
+        // Seřazení: Neodeslané nahoře, pak podle data (timestamp)
         let sorted = [...allRecords].sort((a, b) => {
             if (!a.odeslano && b.odeslano) return -1;
             if (a.odeslano && !b.odeslano) return 1;
@@ -250,44 +220,39 @@
 
             row.innerHTML = `
                 <td>${r.datum_obj}</td>
-                <td style="font-weight:bold">${r.firma}</td>
+                <td style="font-weight:bold; color:#000;">${r.firma}</td>
                 <td>${r.osoba || '-'}</td>
                 <td>${r.odeslano || '---'}</td>
-                <td>${r.poznamka || ''}</td>
-                <td class="col-actions">
-                    ${!r.odeslano ? `<button class="btn-process" onclick="handleProcess('${r.fbKey}')">ZPRACOVAT</button>` : ''}
-                    <button onclick="startEdit('${r.fbKey}')" style="background:#ffc107; color:black;">✎ Upravit</button>
-                    <button onclick="deleteRecord('${r.fbKey}')" style="background:var(--danger-red)">✕ Smazat</button>
+                <td><small>${r.poznamka || ''}</small></td>
+                <td>
+                    ${!r.odeslano ? `<button class="btn-card btn-process" onclick="startEdit('${r.fbKey}', true)">ZPRACOVAT</button>` : ''}
+                    <button class="btn-card btn-edit" onclick="startEdit('${r.fbKey}')">Upravit</button>
+                    <button class="btn-card btn-delete" onclick="deleteRecord('${r.fbKey}')">Smazat</button>
                 </td>
             `;
             tbody.appendChild(row);
         });
     }
 
-    // (Zde by pokračovaly vaše funkce handleSearch, deleteRecord, startEdit, resetForm atd. z původního kódu)
-    // Pro stručnost jsem nechal jen ty hlavní pro vizualizaci.
-    
     document.getElementById('recordForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+        const fbKey = document.getElementById('editId').value;
         const data = {
             datum_obj: document.getElementById('datum_obj').value,
             firma: document.getElementById('firma').value,
             osoba: document.getElementById('osoba').value,
             odeslano: document.getElementById('odeslano').value,
             poznamka: document.getElementById('poznamka').value,
-            timestamp: Date.now()
+            timestamp: fbKey ? allRecords.find(x => x.fbKey === fbKey).timestamp : Date.now()
         };
-        
-        const method = document.getElementById('editId').value ? 'PATCH' : 'POST';
-        const url = document.getElementById('editId').value ? 
-                    DB_URL.replace(".json", `/${document.getElementById('editId').value}.json`) : DB_URL;
 
-        await fetch(url, { method: method, body: JSON.stringify(data) });
+        const url = fbKey ? DB_URL.replace(".json", `/${fbKey}.json`) : DB_URL;
+        await fetch(url, { method: fbKey ? 'PATCH' : 'POST', body: JSON.stringify(data) });
         resetForm();
         loadData();
     });
 
-    function startEdit(fbKey) {
+    function startEdit(fbKey, focusSent = false) {
         const r = allRecords.find(x => x.fbKey === fbKey);
         document.getElementById('editId').value = fbKey;
         document.getElementById('firma').value = r.firma;
@@ -295,14 +260,26 @@
         fp_sent.setDate(r.odeslano || "");
         document.getElementById('osoba').value = r.osoba || "";
         document.getElementById('poznamka').value = r.poznamka || "";
-        document.getElementById('formTitle').innerText = "Úprava záznamu";
-        window.scrollTo(0,0);
+        document.getElementById('formTitle').innerText = focusSent ? "Zpracování vzorku" : "Úprava záznamu";
+        document.getElementById('submitBtn').innerText = "AKTUALIZOVAT";
+        document.getElementById('cancelEdit').style.display = "block";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if(focusSent) { setTimeout(() => document.getElementById('odeslano').focus(), 500); }
+    }
+
+    async function deleteRecord(fbKey) {
+        if(confirm("Opravdu smazat?")) {
+            await fetch(DB_URL.replace(".json", `/${fbKey}.json`), { method: 'DELETE' });
+            loadData();
+        }
     }
 
     function resetForm() {
         document.getElementById('recordForm').reset();
         document.getElementById('editId').value = "";
         document.getElementById('formTitle').innerText = "Nový vzorek";
+        document.getElementById('submitBtn').innerText = "ULOŽIT DO SEZNAMU";
+        document.getElementById('cancelEdit').style.display = "none";
         fp_obj.setDate(new Date());
         fp_sent.clear();
     }
@@ -313,6 +290,8 @@
             tr.style.display = tr.innerText.toLowerCase().includes(q) ? "" : "none";
         });
     }
+
+    setInterval(loadData, 30000);
 </script>
 </body>
 </html>
