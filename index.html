@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vzorky Seznam Mobile</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/cs.js"></script>
+
+    <style>
+        :root {
+            --primary-orange: #ff9800;
+            --dark-orange: #e68a00;
+            --danger-red: #ff4d4d;
+            --info-blue: #007bff;
+            --success-green: #28a745;
+            --bg-color: #f8f9fa;
+        }
+
+        body { 
+            font-family: -apple-system, system-ui, sans-serif; 
+            margin: 0; 
+            padding: 10px; 
+            background-color: var(--bg-color); 
+            color: #333;
+        }
+
+        /* Kontejner přizpůsobený mobilu */
+        .container { 
+            max-width: 100%; 
+            margin: auto; 
+            background: white; 
+            padding: 15px; 
+            border-radius: 15px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        h2 { 
+            font-size: 1.4rem; 
+            text-transform: uppercase; 
+            border-bottom: 3px solid var(--primary-orange);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        /* Status bar nahoře */
+        .top-status { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-size: 0.8rem; 
+            margin-bottom: 15px;
+            background: #eee;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        /* Formulář pod sebou pro mobil */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        
+        input { 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            font-size: 16px; /* Prevence zoomu na iPhone */
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+
+        .date-input-group { display: flex; gap: 8px; }
+        .date-input-group input { flex: 1; }
+        .date-input-group button { width: auto; padding: 0 15px; }
+
+        button { 
+            background-color: var(--primary-orange); 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 1rem;
+        }
+
+        .btn-add { width: 100%; margin-top: 10px; background: #333; }
+        
+        /* Vyhledávání */
+        .search-row { margin: 20px 0; }
+        .search-input { border: 2px solid var(--primary-orange); }
+
+        /* Tabulka transformovaná na karty pro mobil */
+        table, thead, tbody, th, td, tr { display: block; }
+        thead tr { position: absolute; top: -9999px; left: -9999px; }
+        
+        tr { 
+            border: 1px solid #eee; 
+            margin-bottom: 15px; 
+            border-radius: 10px; 
+            padding: 10px; 
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        tr.not-sent { border-left: 5px solid var(--danger-red); background: #fff8f8; }
+
+        td { border: none; padding: 5px 0; position: relative; padding-left: 40%; font-size: 0.95rem; }
+        td:before { 
+            position: absolute; left: 0; width: 35%; padding-right: 10px; 
+            white-space: nowrap; font-weight: bold; color: #888; font-size: 0.8rem;
+        }
+
+        /* Názvy polí v kartě */
+        td:nth-of-type(1):before { content: "Datum:"; }
+        td:nth-of-type(2):before { content: "Firma:"; }
+        td:nth-of-type(3):before { content: "Osoba:"; }
+        td:nth-of-type(4):before { content: "Odesláno:"; }
+        td:nth-of-type(5):before { content: "Poznámka:"; }
+        td:nth-of-type(6) { padding-left: 0; text-align: center; border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px; }
+
+        .btn-process { width: 100%; margin-bottom: 10px; }
+        .col-actions { display: flex; justify-content: space-around; width: 100% !important; }
+
+        /* Zámek obrazovky */
+        #loginOverlay {
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background:white; z-index:1000; display:flex; flex-direction:column;
+            align-items:center; justify-content:center; padding: 20px; text-align:center;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loginOverlay">
+    <h2>Vstup do evidence</h2>
+    <p>Zadejte přístupový kód:</p>
+    <input type="password" id="passCode" style="text-align:center; margin-bottom:20px;">
+    <button onclick="checkPass()" style="width:200px">ODEMKNOUT</button>
+</div>
+
+<div class="container" id="mainContent" style="display:none;">
+    <div class="top-status">
+        <span id="counter">Záznamů: 0</span>
+        <span id="offlineStatus" style="color:var(--dark-orange)"></span>
+        <div id="dbStatus" style="width:10px; height:10px; border-radius:50%; background:#ccc;"></div>
+    </div>
+
+    <h2 id="formTitle">Nový vzorek</h2>
+    <form id="recordForm">
+        <input type="hidden" id="editId">
+        
+        <div class="form-group">
+            <label>Název firmy:</label>
+            <input type="text" id="firma" required placeholder="Jméno firmy">
+        </div>
+
+        <div class="form-group">
+            <label>Datum objednání:</label>
+            <div class="date-input-group">
+                <input type="text" id="datum_obj" required>
+                <button type="button" onclick="setToday('datum_obj')">Dnes</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Kontaktní osoba:</label>
+            <input type="text" id="osoba" placeholder="Jméno">
+        </div>
+
+        <div class="form-group">
+            <label>Odesláno (vyplňte při expedici):</label>
+            <div class="date-input-group">
+                <input type="text" id="odeslano">
+                <button type="button" onclick="setToday('odeslano')">Dnes</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Poznámka:</label>
+            <input type="text" id="poznamka">
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-add">ULOŽIT ZÁZNAM</button>
+        <button type="button" id="cancelEdit" style="display:none; background:#666; width:100%; margin-top:10px;" onclick="resetForm()">ZRUŠIT</button>
+    </form>
+
+    <div class="search-row">
+        <input type="text" id="search" class="search-input" placeholder="Hledat firmu..." onkeyup="handleSearch()">
+    </div>
+
+    <table id="recordTable">
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<script>
+    // --- VAŠE KONFIGURACE ---
+    const DB_URL = "https://vzorky-seznam-default-rtdb.europe-west1.firebasedatabase.app/vzorky.json";
+    const SECRET_CODE = "1234"; // TADY SI NASTAVTE SVÉ HESLO
+
+    function checkPass() {
+        const val = document.getElementById('passCode').value;
+        if(val === SECRET_CODE) {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            loadData();
+        } else {
+            alert("Špatný kód!");
+        }
+    }
+
+    // --- ZBYTEK LOGIKY (PŮVODNÍ + ÚPRAVY) ---
+    let allRecords = [];
+    const fp_obj = flatpickr("#datum_obj", { locale: "cs", dateFormat: "j.n.Y", defaultDate: "today" });
+    const fp_sent = flatpickr("#odeslano", { locale: "cs", dateFormat: "j.n.Y" });
+
+    function setToday(id) { (id === 'datum_obj' ? fp_obj : fp_sent).setDate(new Date()); }
+
+    async function loadData() {
+        try {
+            const response = await fetch(DB_URL);
+            const data = await response.json();
+
+            allRecords = data ? Object.keys(data).map(key => ({ ...data[key], fbKey: key })) : [];
+            displayRecords();
+            document.getElementById('dbStatus').style.background = "var(--success-green)";
+        } catch (e) {
+            document.getElementById('dbStatus').style.background = "var(--danger-red)";
+        }
+    }
+
+    function displayRecords() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        
+        // Seřazení: Neodeslané nahoře, pak podle data
+        let sorted = [...allRecords].sort((a, b) => {
+            if (!a.odeslano && b.odeslano) return -1;
+            if (a.odeslano && !b.odeslano) return 1;
+            return b.timestamp - a.timestamp;
+        });
+
+        document.getElementById('counter').innerText = `Záznamů: ${sorted.length}`;
+
+        sorted.forEach(r => {
+            const row = document.createElement('tr');
+            if (!r.odeslano) row.classList.add('not-sent');
+
+            row.innerHTML = `
+                <td>${r.datum_obj}</td>
+                <td style="font-weight:bold">${r.firma}</td>
+                <td>${r.osoba || '-'}</td>
+                <td>${r.odeslano || '---'}</td>
+                <td>${r.poznamka || ''}</td>
+                <td class="col-actions">
+                    ${!r.odeslano ? `<button class="btn-process" onclick="handleProcess('${r.fbKey}')">ZPRACOVAT</button>` : ''}
+                    <button onclick="startEdit('${r.fbKey}')" style="background:#ffc107; color:black;">✎ Upravit</button>
+                    <button onclick="deleteRecord('${r.fbKey}')" style="background:var(--danger-red)">✕ Smazat</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // (Zde by pokračovaly vaše funkce handleSearch, deleteRecord, startEdit, resetForm atd. z původního kódu)
+    // Pro stručnost jsem nechal jen ty hlavní pro vizualizaci.
+    
+    document.getElementById('recordForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = {
+            datum_obj: document.getElementById('datum_obj').value,
+            firma: document.getElementById('firma').value,
+            osoba: document.getElementById('osoba').value,
+            odeslano: document.getElementById('odeslano').value,
+            poznamka: document.getElementById('poznamka').value,
+            timestamp: Date.now()
+        };
+        
+        const method = document.getElementById('editId').value ? 'PATCH' : 'POST';
+        const url = document.getElementById('editId').value ? 
+                    DB_URL.replace(".json", `/${document.getElementById('editId').value}.json`) : DB_URL;
+
+        await fetch(url, { method: method, body: JSON.stringify(data) });
+        resetForm();
+        loadData();
+    });
+
+    function startEdit(fbKey) {
+        const r = allRecords.find(x => x.fbKey === fbKey);
+        document.getElementById('editId').value = fbKey;
+        document.getElementById('firma').value = r.firma;
+        fp_obj.setDate(r.datum_obj);
+        fp_sent.setDate(r.odeslano || "");
+        document.getElementById('osoba').value = r.osoba || "";
+        document.getElementById('poznamka').value = r.poznamka || "";
+        document.getElementById('formTitle').innerText = "Úprava záznamu";
+        window.scrollTo(0,0);
+    }
+
+    function resetForm() {
+        document.getElementById('recordForm').reset();
+        document.getElementById('editId').value = "";
+        document.getElementById('formTitle').innerText = "Nový vzorek";
+        fp_obj.setDate(new Date());
+        fp_sent.clear();
+    }
+
+    function handleSearch() {
+        const q = document.getElementById('search').value.toLowerCase();
+        document.querySelectorAll('#tableBody tr').forEach(tr => {
+            tr.style.display = tr.innerText.toLowerCase().includes(q) ? "" : "none";
+        });
+    }
+</script>
+</body>
+</html>
